@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SleepTrackerAPI", "SleepTrackerAPI.csproj", "{0BE23F7B-3F90-95D0-F5B5-36A7BDD63BCD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0BE23F7B-3F90-95D0-F5B5-36A7BDD63BCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BE23F7B-3F90-95D0-F5B5-36A7BDD63BCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BE23F7B-3F90-95D0-F5B5-36A7BDD63BCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BE23F7B-3F90-95D0-F5B5-36A7BDD63BCD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7E0C4DF5-7EF3-4423-88AE-A8582608435D}
+	EndGlobalSection
+EndGlobal
