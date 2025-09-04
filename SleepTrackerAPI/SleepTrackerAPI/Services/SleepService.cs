@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 public interface ISleepService
 {
     Task<IEnumerable<SleepDTO>> GetAllSleepAsync();
+    Task<IEnumerable<SleepDTO>> GetUsersSleep(int userId);
     Task<SleepDTO> AddSleepAsync(SleepDTO sleep);
     Task<SleepDTO> EditSleep(SleepDTO sleep);
     Task<bool> DeleteSleep(int id);
@@ -20,6 +21,10 @@ public class SleepService : ISleepService
     public async Task<IEnumerable<SleepDTO>> GetAllSleepAsync()
     {
         return await _context.Sleep.ToListAsync();
+    }
+    public async Task<IEnumerable<SleepDTO>> GetUsersSleep(int userId)
+    {
+        return await _context.Sleep.Where(s => s.UserId == userId).ToListAsync();
     }
     public async Task<SleepDTO> AddSleepAsync(SleepDTO sleep)
     {
