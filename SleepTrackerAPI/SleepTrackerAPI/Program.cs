@@ -4,6 +4,8 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddApplicationInsightsTelemetry();
+
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -60,6 +62,9 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    // User Secrets config for API key in local development
+    builder.Configuration.AddUserSecrets<Program>();
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }

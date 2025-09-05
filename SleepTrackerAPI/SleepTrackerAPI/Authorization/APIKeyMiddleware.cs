@@ -7,7 +7,8 @@ public class APIKeyMiddleware
     public APIKeyMiddleware(RequestDelegate next, IConfiguration configuration)
     {
         _next = next;
-        apiKey = "1ae6fcb1-0f22-4a67-b385-8377de3fa5f5";
+        apiKey = configuration["API_KEY"] ?? "";
+        Console.WriteLine(apiKey);
     }
 
     public async Task InvokeAsync(HttpContext context)
