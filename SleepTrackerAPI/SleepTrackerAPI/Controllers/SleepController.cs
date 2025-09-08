@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using AutoMapper;
 
-
-namespace SleepTrackerAPI.SleepEnpoints;
-
 [ApiController]
 [Route("[controller]")]
 public class SleepController : ControllerBase

@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddApplicationInsightsTelemetry();
 
@@ -43,11 +44,13 @@ builder.Services.AddSwaggerGen(config =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer("Server=MARCUSCOMPUTER\\SQLEXPRESS; Database=SleepTracker; Trusted_Connection=True; TrustServerCertificate=True;");
+    options.UseSqlServer(connectionString);
 });
 
 builder.Services.AddScoped<ISleepService, SleepService>();
 builder.Services.AddScoped<ISleepUseCase, SleepUseCase>();
+
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 
 var app = builder.Build();
