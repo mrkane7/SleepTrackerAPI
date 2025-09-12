@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 public interface IAccountService
 {
     Task<UserAccountDTO?> GetAccount(int id);
+    Task<UserAccountDTO?> GetAccountByEmail(string email);
     Task<UserAccountDTO> CreateAccount(UserAccountDTO userAccount);
     Task<UserAccountDTO> EditAccount(UserAccountDTO userAccount);
     Task<UserAccountDTO?> UpdateSleepGoal(int id, int sleepGoal);
@@ -23,6 +24,11 @@ public class AccountService : IAccountService
     public async Task<UserAccountDTO?> GetAccount(int id)
     {
         var userAccount = await _context.UserAccounts.FindAsync(id);
+        return userAccount;
+    }
+    public async Task<UserAccountDTO?> GetAccountByEmail(string email)
+    {
+        var userAccount = await _context.UserAccounts.Where(a => a.Email == email).FirstOrDefaultAsync();
         return userAccount;
     }
 

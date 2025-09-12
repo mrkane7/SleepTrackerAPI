@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 [ApiController]
 [Route("[controller]")]
 public class SleepController : ControllerBase

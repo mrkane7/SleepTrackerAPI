@@ -1,5 +1,6 @@
 using System.Net;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -9,15 +10,18 @@ public class AccountController : ControllerBase
     private readonly IMapper _mapper;
     private readonly ILogger<AccountController> _logger;
     private readonly IAccountService _accountService;
+    private readonly ILoginUseCase _loginUseCase;
 
-    public AccountController(IMapper mapper, ILogger<AccountController> logger, IAccountService accountService)
+    public AccountController(IMapper mapper, ILogger<AccountController> logger, IAccountService accountService, ILoginUseCase loginUseCase)
     {
         _logger = logger;
         _mapper = mapper;
         _accountService = accountService;
+        _loginUseCase = loginUseCase;
 
     }
 
+    [Authorize]
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetAccount([FromRoute] int userId)
     {
@@ -39,6 +43,21 @@ public class AccountController : ControllerBase
 
     }
 
+    [HttpPost("Login")]
+    public async Task<IActionResult> AccountLogin([FromBody] LoginDTO userAccount)
+    {
+        var loginResult = await _loginUseCase.LoginUser(userAccount);
+
+        if (!loginResult.Successful)
+        {
+            var errorResponse = new Response(loginResult);
+            return BadRequest(errorResponse);
+        }
+        var jwt = loginResult.GetResult(_mapper.Map<string>);
+        var response = new DataResponse<string>(jwt, loginResult);
+        return Ok(response);
+    }
+
     [HttpPost]
     public async Task<IActionResult> CreateAccount([FromBody] UserAccountDTO userAccount)
     {
@@ -55,6 +74,7 @@ public class AccountController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpPut]
     public async Task<IActionResult> EditAccount([FromBody] UserAccountDTO userAccount)
     {
@@ -71,7 +91,8 @@ public class AccountController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("{userId}")]
+    [Authorize]
+    [HttpPut("SleepGoal/{userId}")]
     public async Task<IActionResult> UpdateSleepGoal([FromRoute] int userId, [FromBody] int sleepGoal)
     {
         var accountServiceResult = await _accountService.UpdateSleepGoal(userId, sleepGoal);
@@ -91,6 +112,7 @@ public class AccountController : ControllerBase
         return Ok(response);
     }
 
+    [Authorize]
     [HttpDelete("{userId}")]
     public async Task<IActionResult> DeleteAccount([FromRoute] int userId)
     {
