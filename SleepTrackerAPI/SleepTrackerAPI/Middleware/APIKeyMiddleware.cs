@@ -4,10 +4,10 @@ public class APIKeyMiddleware
     private readonly string apiHeaderName = "X-Api-Key";
     private readonly string apiKey;
 
-    public APIKeyMiddleware(RequestDelegate next, IConfiguration configuration)
+    public APIKeyMiddleware(RequestDelegate next, AppSettings appSettings)
     {
         _next = next;
-        apiKey = configuration["API_KEY"] ?? "";
+        apiKey = appSettings.API_KEY ?? "";
         Console.WriteLine(apiKey);
     }
 

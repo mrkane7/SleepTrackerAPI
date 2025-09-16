@@ -1,3 +1,5 @@
+using Microsoft.IdentityModel.Tokens;
+
 public interface ISleepUseCase
 {
     Task<Result<IEnumerable<SleepDTO>>> GetAllSleep();
@@ -11,10 +13,12 @@ public interface ISleepUseCase
 public class SleepUseCase : ISleepUseCase
 {
     private readonly ISleepService _sleepService;
+    private readonly SleepStatsHandler _sleepStatsHandler;
 
     public SleepUseCase(ISleepService sleepService)
     {
         _sleepService = sleepService;
+        _sleepStatsHandler = new SleepStatsHandler();
     }
 
     public async Task<Result<IEnumerable<SleepDTO>>> GetAllSleep()
@@ -31,18 +35,16 @@ public class SleepUseCase : ISleepUseCase
     {
         var sleepGoal = 8;
         var userSleep = await _sleepService.GetUsersSleep(userId);
-        var sleepStats = new SleepStatsDTO {
-            UserId = userId,
-            WeeklyAverage = userSleep.Where(s => s.StartTime >= DateTime.Now.AddDays(-7)).Average(s => (s.EndTime - s.StartTime).TotalHours),
-            MonthlyAverage = userSleep.Where(s => s.StartTime >= DateTime.Now.AddDays(-30)).Average(s => (s.EndTime - s.StartTime).TotalHours),
-            YearlyAverage = userSleep.Where(s => s.StartTime >= DateTime.Now.AddDays(-365)).Average(s => (s.EndTime - s.StartTime).TotalHours),
-            WeeklyDebt = (int)(7 * sleepGoal - userSleep.Where(s => s.StartTime >= DateTime.Now.AddDays(-7)).Sum(s => (s.EndTime - s.StartTime).TotalHours)),
-            MonthlyDebt = (int)(30 * sleepGoal - userSleep.Where(s => s.StartTime >= DateTime.Now.AddDays(-30)).Sum(s => (s.EndTime - s.StartTime).TotalHours)),
-            YearlyDebt = (int)(365 * sleepGoal - userSleep.Where(s => s.StartTime >= DateTime.Now.AddDays(-365)).Sum(s => (s.EndTime - s.StartTime).TotalHours)),
-        };
+        var sleepStats = _sleepStatsHandler.GenerateSleepStats(userSleep, sleepGoal);
+
+        if (sleepStats == null)
+        {
+            return Result<SleepStatsDTO>.Fail(ResultReason.NotFound, "No sleep stats found.");
+        }
 
         return Result<SleepStatsDTO>.Success(sleepStats);
     }
+
     public async Task<Result<SleepDTO>> AddSleep(SleepDTO sleep)
     {
         var sleepData = await _sleepService.AddSleepAsync(sleep);

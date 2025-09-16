@@ -3,11 +3,18 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var appSettings = new AppSettings();
+builder.Configuration.Bind(appSettings);
+builder.Services.Configure<AppSettings>(builder.Configuration);
+builder.Services.AddSingleton(appSettings);
+
+
+var connectionString = appSettings.ConnectionStrings.DefaultConnection;
 
 builder.Services.AddApplicationInsightsTelemetry();
 
@@ -41,8 +48,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     o.TokenValidationParameters = new TokenValidationParameters
     {
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("9c0a5c68-3f6f-4ef5-b2c3-fbb2ff7f2d45")),
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = appSettings.Jwt.Issuer,
+        ValidAudience = appSettings.Jwt.Audience,
         ClockSkew = TimeSpan.Zero
     };
 });
